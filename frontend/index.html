@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PolyWrite - AI Writing Trust Layer</title>
+    <meta name="description" content="PolyWrite: A semantic-governance layer for AI-assisted writing with anti-hallucination protection.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-gradient"></div>
+    <div class="bg-grid"></div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <span class="logo-text">PolyWrite</span>
+                <span class="logo-badge">AI Trust Layer</span>
+            </div>
+            <nav class="nav">
+                <button class="nav-btn active" data-tab="editor">Editor</button>
+                <button class="nav-btn" data-tab="validators">Validators</button>
+                <button class="nav-btn" data-tab="audit">Audit Log</button>
+            </nav>
+            <div class="auth-section">
+                <span class="user-email" id="userEmail">Not logged in</span>
+                <button class="btn btn-secondary" id="authBtn">Sign In</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Editor Tab -->
+            <section class="tab-content active" id="editor-tab">
+                <div class="editor-layout">
+                    <!-- Left Panel: Input -->
+                    <div class="panel glass">
+                        <div class="panel-header">
+                            <h2>Original Text</h2>
+                            <div class="char-count">
+                                <span id="charCount">0</span> / 1800 chars
+                            </div>
+                        </div>
+                        <textarea 
+                            id="originalText" 
+                            class="editor-textarea"
+                            placeholder="Paste or type your text here (20-1800 characters)..."
+                        ></textarea>
+                        <div class="intent-selector">
+                            <label class="intent-option">
+                                <input type="radio" name="intent" value="rewrite" checked>
+                                <span class="intent-card">
+                                    <span class="intent-icon">✨</span>
+                                    <span class="intent-label">Rewrite</span>
+                                    <span class="intent-desc">Improve flow & structure</span>
+                                </span>
+                            </label>
+                            <label class="intent-option">
+                                <input type="radio" name="intent" value="humanize">
+                                <span class="intent-card">
+                                    <span class="intent-icon">💬</span>
+                                    <span class="intent-label">Humanize</span>
+                                    <span class="intent-desc">Natural language</span>
+                                </span>
+                            </label>
+                            <label class="intent-option">
+                                <input type="radio" name="intent" value="clarify">
+                                <span class="intent-card">
+                                    <span class="intent-icon">🔍</span>
+                                    <span class="intent-label">Clarify</span>
+                                    <span class="intent-desc">Simplify phrasing</span>
+                                </span>
+                            </label>
+                        </div>
+                        <button class="btn btn-primary btn-full" id="processBtn">
+                            <span class="btn-icon">⚡</span>
+                            Process with PolyWrite
+                        </button>
+                    </div>
+
+                    <!-- Right Panel: Output -->
+                    <div class="panel glass">
+                        <div class="panel-header">
+                            <h2>AI Proposal</h2>
+                            <div class="status-badge" id="statusBadge">Ready</div>
+                        </div>
+                        <div class="proposal-output" id="proposalOutput">
+                            <div class="empty-state">
+                                <div class="empty-icon">📝</div>
+                                <p>Your AI proposal will appear here</p>
+                                <p class="empty-hint">Enter text and click "Process with PolyWrite"</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Validation Results -->
+                        <div class="validation-results" id="validationResults" style="display: none;">
+                            <h3>Validation Results</h3>
+                            <div class="validation-grid">
+                                <div class="validation-card" id="similarityCard">
+                                    <div class="validation-label">Similarity</div>
+                                    <div class="validation-value" id="similarityValue">--</div>
+                                    <div class="validation-bar">
+                                        <div class="validation-fill" id="similarityBar"></div>
+                                    </div>
+                                </div>
+                                <div class="validation-card" id="entityCard">
+                                    <div class="validation-label">Entities</div>
+                                    <div class="validation-value" id="entityValue">--</div>
+                                </div>
+                                <div class="validation-card" id="polarityCard">
+                                    <div class="validation-label">Polarity</div>
+                                    <div class="validation-value" id="polarityValue">--</div>
+                                </div>
+                                <div class="validation-card" id="toneCard">
+                                    <div class="validation-label">Tone</div>
+                                    <div class="validation-value" id="toneValue">--</div>
+                                </div>
+                            </div>
+                            <div class="validation-flags" id="validationFlags"></div>
+                            <div class="decision-box" id="decisionBox">
+                                <div class="decision-label">Decision</div>
+                                <div class="decision-value" id="decisionValue">--</div>
+                                <div class="decision-reason" id="decisionReason"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Validators Tab -->
+            <section class="tab-content" id="validators-tab">
+                <div class="validators-grid">
+                    <!-- Entity Validator -->
+                    <div class="validator-card glass">
+                        <div class="validator-header">
+                            <span class="validator-icon">🔢</span>
+                            <h3>Entity Validator</h3>
+                        </div>
+                        <p class="validator-desc">Detects numbers, dates, proper nouns, and citations to prevent factual drift.</p>
+                        <textarea id="entityOriginal" class="validator-input" placeholder="Original text..."></textarea>
+                        <textarea id="entityProposed" class="validator-input" placeholder="Proposed text..."></textarea>
+                        <button class="btn btn-secondary" onclick="testEntityValidator()">Test Entity Validation</button>
+                        <div class="validator-result" id="entityResult"></div>
+                    </div>
+
+                    <!-- Polarity Detector -->
+                    <div class="validator-card glass">
+                        <div class="validator-header">
+                            <span class="validator-icon">⚖️</span>
+                            <h3>Polarity Detector</h3>
+                        </div>
+                        <p class="validator-desc">Catches negation reversals like "not effective" → "effective".</p>
+                        <textarea id="polarityOriginal" class="validator-input" placeholder="Original text..."></textarea>
+                        <textarea id="polarityProposed" class="validator-input" placeholder="Proposed text..."></textarea>
+                        <button class="btn btn-secondary" onclick="testPolarityDetector()">Test Polarity Detection</button>
+                        <div class="validator-result" id="polarityResult"></div>
+                    </div>
+
+                    <!-- Claim Validator -->
+                    <div class="validator-card glass">
+                        <div class="validator-header">
+                            <span class="validator-icon">📊</span>
+                            <h3>Claim Validator</h3>
+                        </div>
+                        <p class="validator-desc">Detects factual claims and flags unsupported assertions.</p>
+                        <textarea id="claimText" class="validator-input" placeholder="Text to analyze for claims..."></textarea>
+                        <button class="btn btn-secondary" onclick="testClaimValidator()">Detect Claims</button>
+                        <div class="validator-result" id="claimResult"></div>
+                    </div>
+
+                    <!-- Tone Analyzer -->
+                    <div class="validator-card glass">
+                        <div class="validator-header">
+                            <span class="validator-icon">🎭</span>
+                            <h3>Tone Analyzer</h3>
+                        </div>
+                        <p class="validator-desc">Analyzes voice/tone and detects formality shifts.</p>
+                        <textarea id="toneOriginal" class="validator-input" placeholder="Original text..."></textarea>
+                        <textarea id="toneProposed" class="validator-input" placeholder="Proposed text..."></textarea>
+                        <button class="btn btn-secondary" onclick="testToneAnalyzer()">Analyze Tone</button>
+                        <div class="validator-result" id="toneResult"></div>
+                    </div>
+
+                    <!-- Document Scanner -->
+                    <div class="validator-card glass wide">
+                        <div class="validator-header">
+                            <span class="validator-icon">📄</span>
+                            <h3>Document Scanner</h3>
+                        </div>
+                        <p class="validator-desc">Scans for structure, consistency, and clarity issues.</p>
+                        <textarea id="documentText" class="validator-input tall" placeholder="Paste document to scan..."></textarea>
+                        <button class="btn btn-secondary" onclick="testDocumentScanner()">Scan Document</button>
+                        <div class="validator-result" id="documentResult"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Audit Tab -->
+            <section class="tab-content" id="audit-tab">
+                <div class="panel glass">
+                    <div class="panel-header">
+                        <h2>Audit Log</h2>
+                        <button class="btn btn-secondary" onclick="loadAuditLogs()">Refresh</button>
+                    </div>
+                    <div class="audit-table-container">
+                        <table class="audit-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Action</th>
+                                    <th>Similarity</th>
+                                    <th>Risk</th>
+                                    <th>Decision</th>
+                                </tr>
+                            </thead>
+                            <tbody id="auditTableBody">
+                                <tr>
+                                    <td colspan="5" class="empty-cell">Sign in to view audit logs</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Auth Modal -->
+        <div class="modal" id="authModal">
+            <div class="modal-content glass">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Sign In</h2>
+                    <button class="modal-close" onclick="closeModal()">&times;</button>
+                </div>
+                <form id="authForm">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" required placeholder="you@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full" id="authSubmitBtn">Sign In</button>
+                    <p class="auth-switch">
+                        <span id="authSwitchText">Don't have an account?</span>
+                        <a href="#" id="authSwitchLink" onclick="toggleAuthMode(event)">Sign Up</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <!-- Toast Container -->
+        <div class="toast-container" id="toastContainer"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
