@@ -317,7 +317,7 @@ async function handleAuth(e) {
         }
 
         if (isSignUp) {
-            showToast('Account created! Please sign in.', 'success');
+            showToast('Account created! Please check your email to confirm before signing in.', 'success');
             isSignUp = false;
             toggleAuthMode({ preventDefault: () => { } });
         } else {
