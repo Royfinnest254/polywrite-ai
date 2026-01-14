@@ -4,6 +4,8 @@
 # Web Framework
 fastapi==0.109.0
 uvicorn[standard]==0.27.0
+# Required for Pydantic email validation
+email-validator>=2.1.0
 
 # Supabase (let it resolve its own httpx version)
 supabase>=2.0.0
