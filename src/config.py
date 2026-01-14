@@ -10,13 +10,13 @@ from functools import lru_cache
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
     
-    # Supabase
-    supabase_url: str
-    supabase_anon_key: str
-    supabase_service_role_key: str
+    # Supabase (optional for demo mode)
+    supabase_url: str = ""
+    supabase_anon_key: str = ""
+    supabase_service_role_key: str = ""
     
-    # JWT
-    jwt_secret: str
+    # JWT (optional for demo mode)
+    jwt_secret: str = "demo-secret-change-in-production"
     
     # Rate Limiting (Cost & Abuse Control)
     # Hard limits - no grace period, no soft warnings
