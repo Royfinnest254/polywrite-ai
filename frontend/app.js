@@ -2,7 +2,9 @@
 // PolyWrite - Frontend Application
 // ============================================
 
-const API_BASE = 'http://localhost:8000';
+// Use relative path for production, localhost for local dev if needed
+// Vercel serves both frontend and backend on same domain
+const API_BASE = '';
 
 // State
 let authToken = localStorage.getItem('polywrite_token');
